@@ -16,13 +16,18 @@ pnpm add @seobryn/ghost-glyph
 ## Quick Example
 
 ```ts
-import { encode, decode } from "@seobryn/ghost-glyph";
+import { decode, embed, encode, extract } from "@seobryn/ghost-glyph";
 
 const hidden = encode("Hi 👋");
 console.log(hidden); // invisible string
 
 const original = decode(hidden);
 console.log(original); // "Hi 👋"
+
+const carrier = "Release notes are ready.";
+const embedded = embed("Ship at 17:00", carrier);
+const revealed = extract(embedded);
+console.log(revealed); // "Ship at 17:00"
 ```
 
 ## API
@@ -45,6 +50,20 @@ Behavior:
 - Ignores non-zero-width characters in the provided input.
 - Throws an error if the filtered encoded length is not divisible by 8.
 
+### embed(secret: string, carrier: string): string
+
+Appends an invisible payload to visible carrier text.
+
+- Uses invisible start/end delimiters around the encoded payload.
+- Keeps your visible carrier text unchanged.
+
+### extract(carrier: string): string
+
+Extracts and decodes a hidden payload from carrier text created with `embed`.
+
+- Reads payload between invisible start/end delimiters.
+- Throws if no embedded payload is found.
+
 ### invisibleCharacters
 
 Exposes the character mapping used by the library:
@@ -52,7 +71,9 @@ Exposes the character mapping used by the library:
 ```ts
 {
   zero: "\u200B",
-  one: "\u200C"
+  one: "\u200C",
+  carrierStart: "\u2063",
+  carrierEnd: "\u2064"
 }
 ```
 

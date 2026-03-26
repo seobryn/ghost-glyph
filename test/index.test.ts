@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { decode, encode, invisibleCharacters } from "../src/index.js";
+import {
+  decode,
+  embed,
+  encode,
+  extract,
+  invisibleCharacters,
+} from "../src/index.js";
 
 describe("ghost-glyph", () => {
   it("encodes and decodes plain text", () => {
@@ -40,5 +46,31 @@ describe("ghost-glyph", () => {
     const broken = encoded.slice(0, -1);
 
     expect(() => decode(broken)).toThrowError(/Invalid encoded input length/);
+  });
+
+  it("embeds hidden content into a carrier", () => {
+    const carrier = "Visible message";
+    const embedded = embed("secret", carrier);
+
+    expect(embedded.startsWith(carrier)).toBe(true);
+    expect(embedded).not.toBe(carrier);
+  });
+
+  it("extracts hidden content from a carrier", () => {
+    const carrier = "Hello team";
+    const embedded = embed("Hi 👋", carrier);
+
+    expect(extract(embedded)).toBe("Hi 👋");
+  });
+
+  it("throws when no embedded payload is present", () => {
+    expect(() => extract("plain visible text")).toThrowError(
+      /No embedded payload found/,
+    );
+  });
+
+  it("exposes carrier delimiters in invisible characters map", () => {
+    expect(typeof invisibleCharacters.carrierStart).toBe("string");
+    expect(typeof invisibleCharacters.carrierEnd).toBe("string");
   });
 });

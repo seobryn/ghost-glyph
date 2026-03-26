@@ -1,5 +1,7 @@
 const Z0 = "\u200B";
 const Z1 = "\u200C";
+const CARRIER_START = "\u2063";
+const CARRIER_END = "\u2064";
 const BITS_PER_BYTE = 8;
 
 const encoder = new TextEncoder();
@@ -47,7 +49,30 @@ export function decode(input: string): string {
   return decoder.decode(bytes);
 }
 
+export function embed(secret: string, carrier: string): string {
+  return `${carrier}${CARRIER_START}${encode(secret)}${CARRIER_END}`;
+}
+
+export function extract(carrier: string): string {
+  const startIndex = carrier.indexOf(CARRIER_START);
+
+  if (startIndex === -1) {
+    throw new Error("No embedded payload found");
+  }
+
+  const payloadStart = startIndex + CARRIER_START.length;
+  const endIndex = carrier.indexOf(CARRIER_END, payloadStart);
+
+  if (endIndex === -1) {
+    throw new Error("No embedded payload found");
+  }
+
+  return decode(carrier.slice(payloadStart, endIndex));
+}
+
 export const invisibleCharacters = {
   zero: Z0,
   one: Z1,
+  carrierStart: CARRIER_START,
+  carrierEnd: CARRIER_END,
 } as const;
