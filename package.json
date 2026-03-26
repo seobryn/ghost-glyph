@@ -17,9 +17,11 @@
   "sideEffects": false,
   "scripts": {
     "build": "node ./scripts/build.mjs && tsc -p tsconfig.build.json",
+    "build:cli": "esbuild scripts/cli.ts --bundle --platform=node --outfile=scripts/cli.js --format=esm --banner:js='#!/usr/bin/env node' && esbuild scripts/cli.ts --bundle --platform=node --outfile=dist/cli.js --format=esm --banner:js='#!/usr/bin/env node'",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "cli": "pnpm run build:cli && node dist/cli.js"
   },
   "keywords": [
     "zero-width",

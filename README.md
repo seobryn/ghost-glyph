@@ -79,6 +79,26 @@ Exposes the character mapping used by the library:
 
 ## Development
 
+## CLI Usage (local only)
+
+You can use the library from the terminal via pnpm scripts (not published as a global CLI):
+
+```bash
+# Encode to invisible
+pnpm run cli encode "Secret message"
+
+# Decode from invisible
+pnpm run cli decode "<invisible>"
+
+# Embed secret in carrier
+pnpm run cli embed "hidden" "Visible text"
+
+# Extract secret from carrier
+pnpm run cli extract "Visible text<invisible>"
+```
+
+Run `pnpm run cli` for help and usage info.
+
 ### Install dependencies
 
 ```bash
