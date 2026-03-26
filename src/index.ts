@@ -1,0 +1,53 @@
+const Z0 = "\u200B";
+const Z1 = "\u200C";
+const BITS_PER_BYTE = 8;
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+export function encode(input: string): string {
+  const bytes = encoder.encode(input);
+
+  return Array.from(bytes, (byte) =>
+    byte
+      .toString(2)
+      .padStart(BITS_PER_BYTE, "0")
+      .replaceAll("0", Z0)
+      .replaceAll("1", Z1),
+  ).join("");
+}
+
+export function decode(input: string): string {
+  if (input.length === 0) {
+    return "";
+  }
+
+  const normalized = Array.from(input)
+    .filter((char) => char === Z0 || char === Z1)
+    .join("");
+
+  if (normalized.length % BITS_PER_BYTE !== 0) {
+    throw new Error("Invalid encoded input length");
+  }
+
+  const byteCount = normalized.length / BITS_PER_BYTE;
+  const bytes = new Uint8Array(byteCount);
+
+  for (let index = 0; index < byteCount; index += 1) {
+    const chunk = normalized.slice(
+      index * BITS_PER_BYTE,
+      (index + 1) * BITS_PER_BYTE,
+    );
+    const binary = Array.from(chunk, (char) => (char === Z1 ? "1" : "0")).join(
+      "",
+    );
+    bytes[index] = Number.parseInt(binary, 2);
+  }
+
+  return decoder.decode(bytes);
+}
+
+export const invisibleCharacters = {
+  zero: Z0,
+  one: Z1,
+} as const;
