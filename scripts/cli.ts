@@ -1,4 +1,5 @@
 import { encode, decode, embed, extract } from "../src/index.js";
+import clipboard from "clipboardy";
 
 function printHelp() {
   console.log(
@@ -18,7 +19,9 @@ async function main() {
       case "encode": {
         const text = args.join(" ");
         if (!text) throw new Error("No text provided");
-        console.log(encode(text));
+        const result = encode(text);
+        await clipboard.write(result);
+        console.log("(Invisible text copied to clipboard)");
         break;
       }
       case "decode": {
@@ -32,7 +35,9 @@ async function main() {
         const carrier = carrierArr.join(" ");
         if (!secret || !carrier)
           throw new Error("Usage: embed <secret> <carrier>");
-        console.log(embed(secret, carrier));
+        const result = embed(secret, carrier);
+        await clipboard.write(result);
+        console.log("(Invisible embedded text copied to clipboard)");
         break;
       }
       case "extract": {

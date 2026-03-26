@@ -77,11 +77,11 @@ Exposes the character mapping used by the library:
 }
 ```
 
-## Development
+## CLI Usage
 
-## CLI Usage (local only)
+### Local development
 
-You can use the library from the terminal via pnpm scripts (not published as a global CLI):
+You can use the CLI locally via pnpm scripts:
 
 ```bash
 # Encode to invisible
@@ -98,6 +98,20 @@ pnpm run cli extract "Visible text<invisible>"
 ```
 
 Run `pnpm run cli` for help and usage info.
+
+### Published package
+
+When this package is published, the CLI is available through the `ghost-glyph` binary.
+
+```bash
+# pnpm dlx
+pnpm dlx @seobryn/ghost-glyph encode "Secret message"
+
+# pnpx
+pnpx @seobryn/ghost-glyph encode "Secret message"
+```
+
+The package publish flow builds `dist/index.js`, types, and `dist/cli.js` automatically through the `prepack` script.
 
 ### Install dependencies
 
